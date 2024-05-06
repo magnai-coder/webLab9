@@ -1,0 +1,22 @@
+{
+  "name": "lab9",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "express-router": "^0.0.1",
+    "fs": "^0.0.1-security",
+    "mongoose": "^6.12.8"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
