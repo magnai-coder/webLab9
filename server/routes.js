@@ -1,25 +1,33 @@
 const express = require('express');
 const routers = express.Router();
 const cors = require('cors');
-const Task = require('./task');
-const fs = require('fs').promises; // Using promises for asynchronous file reading
+const ClassIn = require('./task');
+const fs = require('fs').promises; 
 routers.use(cors());
 routers.use(express.json());
 
 
-
 routers.get('/task', async (req, res) => {
     try {
-        const tasks = await  Task.Task.find();
-        res.json(tasks);
+        const classAll = await  ClassIn.Class.find();
+        res.json(classAll);
     } catch (error) {
         console.error("Error fetching tasks:", error);  
         res.status(500).json({ message: "Internal Server Error" });
     }
 });
 
+
+
+routers.post('/task', async (req, res) => {
+        ClassIn.Class.create(req.body)
+        .then(classList => res.json(classList))
+        .catch(err=>res.json(err))
+})
+
+
 routers.post('/register',(req, res) =>{
-     Task.EmployeeModel.create(req.body)
+     ClassIn.EmployeeModel.create(req.body)
     .then(employees => res.json(employees))
     .catch(err => res.json(err))
     console.log(req.body)
@@ -27,7 +35,7 @@ routers.post('/register',(req, res) =>{
 
 routers.post('/login', async(req, res) =>{
     const {email, password} = req.body;
-       const user =  await Task.EmployeeModel.findOne({email});
+       const user =  await ClassIn.EmployeeModel.findOne({email});
        if(!user){
         return res.status(404).json({err: 'user not found'});
        }

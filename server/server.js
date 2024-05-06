@@ -12,4 +12,4 @@ mongoose.connect("mongodb://localhost:27017",(err) =>{
 
 
 
-app.listen(3000, ()=>{console.log('3000 port ажиллаж байна')})
+app.listen(3001, ()=>{console.log('3001 port ажиллаж байна')})
