@@ -3,10 +3,10 @@ const mongoose = require('mongoose');
 
 const taskSchema = new mongoose.Schema({
     day: String,
-    time: Number,
+    time: String,
     classType: String,
     className: String,
-    roomNumber: Number
+    roomNumber: String
 });
 const newModel2 = new mongoose.model('classSchedule', taskSchema)
 const data2 = async()=>{
@@ -29,4 +29,4 @@ data2();
 const Class = mongoose.model('classSchedule', taskSchema);
 
 
-module.exports = {Class};
+module.exports = Class;

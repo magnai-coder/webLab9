@@ -1,7 +1,7 @@
 const express = require('express');
 const routers = express.Router();
 const cors = require('cors');
-const ClassIn = require('./task');
+const Class = require('./task');
 const fs = require('fs').promises; 
 routers.use(cors());
 routers.use(express.json());
@@ -9,7 +9,7 @@ routers.use(express.json());
 
 routers.get('/task', async (req, res) => {
     try {
-        const classAll = await  ClassIn.Class.find();
+        const classAll = await  Class.find();
         res.json(classAll);
     } catch (error) {
         console.error("Error fetching tasks:", error);  
@@ -17,12 +17,30 @@ routers.get('/task', async (req, res) => {
     }
 });
 
-
+routers.delete('/task', async (req,res) => {
+    try{
+        const searching = await Class.findOne(req.body);
+        console.log(searching)
+        if(!searching){
+             res.status(404).json({message: 'haigaad oldsongui'})
+        }
+        await searching.deleteOne();
+        res.json({message: 'Amjilttai ustgagdlaa'})
+          
+    }catch(err){
+        res.status(500).json({message: err.message})
+    }
+}
+)
 
 routers.post('/task', async (req, res) => {
-        ClassIn.Class.create(req.body)
-        .then(classList => res.json(classList))
-        .catch(err=>res.json(err))
+    try {
+        const classInstance = await Class.create(req.body);
+        res.json(classInstance);
+    } catch (error) {
+        console.error("Error creating class:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 })
 
 
@@ -30,7 +48,7 @@ routers.post('/register',(req, res) =>{
      ClassIn.EmployeeModel.create(req.body)
     .then(employees => res.json(employees))
     .catch(err => res.json(err))
-    console.log(req.body)
+   
     })
 
 routers.post('/login', async(req, res) =>{
@@ -40,7 +58,7 @@ routers.post('/login', async(req, res) =>{
         return res.status(404).json({err: 'user not found'});
        }
        res.json(user);
-       console.log(user);
+      
 })
 
 routers.get('/users', async (req, res) => {

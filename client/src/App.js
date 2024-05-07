@@ -25,7 +25,6 @@ function App() {
 
       const data = await response.json();
       setResponse(data);
-      console.log(data);
     } catch (error) {
       console.error("fetch error", error);
     }
@@ -42,6 +41,7 @@ function App() {
         },
         body: JSON.stringify({ day, time, classType, className, roomNumber })
       });
+      
       if (!response.ok) {
         throw new Error(`HTTP error Status: ${response.status}`);
       }
@@ -50,6 +50,47 @@ function App() {
     } catch (error) {
       console.error("fetch error", error);
     }
+    let input = document.getElementById("day");
+    let input2 = document.getElementById("time");
+    let input3 = document.getElementById("type");
+    let input4 = document.getElementById("name");
+    let input5 = document.getElementById("number");
+    input.value = "";
+    input2.value = "";
+    input3.value = "";
+    input4.value = "";
+    input5.value = "";
+   
+  };
+  const handleDeletion = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://localhost:3001/routes/task", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ day, time, classType, className, roomNumber })
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error Status: ${response.status}`);
+      }
+      const data = await response.json();
+      setResponse(data);
+    } catch (error) {
+      console.error("fetch error", error);
+    }
+    let input = document.getElementById("day");
+    let input2 = document.getElementById("time");
+    let input3 = document.getElementById("type");
+    let input4 = document.getElementById("name");
+    let input5 = document.getElementById("number");
+    input.value = "";
+    input2.value = "";
+    input3.value = "";
+    input4.value = "";
+    input5.value = "";
+   
   };
 
 
@@ -85,7 +126,7 @@ function App() {
           </tbody>
         </table>
         <button onClick={handleRefresh}>Шинэчлэх</button>
-        <form onSubmit={handleAddClass}>
+        <form id="allInput">
           <label for="day">Өдөр</label>
           <input type="text" name='day' id="day" onChange={(e) => setDay(e.target.value)}></input>
           <br></br>
@@ -101,7 +142,9 @@ function App() {
           <label for="number">Анги дугаар</label>
           <input type="text" name='number' id="number" onChange={(e) => setClassNumber(e.target.value)}></input>
           <br></br>
-          <button type='submit' name="submitAddItem">Нэмэх</button>
+          <button type='submit' onClick={handleAddClass}>Нэмэх</button>
+          <button type='submit' onClick={handleDeletion}>Хасах</button>
+          <button type='submit' name="submitAddItem">Засах</button>
         </form>
       </div>
     </div>
