@@ -8,6 +8,7 @@ function App() {
   const [classType, setType] = useState("");
   const [className, setClassName] = useState("");
   const [roomNumber, setClassNumber] = useState("");
+  const [result, setResult] = useState("");
 
   const handleRefresh = async (e) => {
     e.preventDefault();
@@ -25,8 +26,11 @@ function App() {
 
       const data = await response.json();
       setResponse(data);
+      setResult("Шинэчлэлт амжилттай хийгдлээ");
     } catch (error) {
       console.error("fetch error", error);
+      setResult("Шинэчлэлт хийгдсэнгүй");
+
     }
   };
 
@@ -45,10 +49,11 @@ function App() {
       if (!response.ok) {
         throw new Error(`HTTP error Status: ${response.status}`);
       }
-      const data = await response.json();
-      setResponse(data);
+      setResult("Хичээлийн хуваарьт нэмэгдлээ шинэчилнэ үү");
     } catch (error) {
       console.error("fetch error", error);
+      setResult("Хичээлийн хуваарьт нэмэхэд алдаа гарлаа");
+
     }
     let input = document.getElementById("day");
     let input2 = document.getElementById("time");
@@ -62,6 +67,29 @@ function App() {
     input5.value = "";
    
   };
+  const handleUpdate = async (e) =>{
+    e.preventDefault();
+    try{
+      
+      const response = await fetch("http://localhost:3001/routes/task", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body:JSON.stringify({day, time, classType, className, roomNumber})
+      });
+      if(!response.ok){
+        throw new Error(`HTTP error Status: ${response.status}`);
+      }
+      setResult("Амжилттай өөрчлөгдлөө шинэчилнэ үү");
+
+    }catch(error){
+      console.error("fetch error", error);
+      setResult("Өөрчлөлтөнд алдаа гарлаа");
+
+    }
+    
+  }
   const handleDeletion = async (e) => {
     e.preventDefault();
     try {
@@ -75,10 +103,12 @@ function App() {
       if (!response.ok) {
         throw new Error(`HTTP error Status: ${response.status}`);
       }
-      const data = await response.json();
-      setResponse(data);
+      setResult("Хичээлийн хуваарьт устгагдлаа шинэчилнэ үү");
+
     } catch (error) {
       console.error("fetch error", error);
+      setResult("Хичээлийн хуваарь устгагдсангүй");
+
     }
     let input = document.getElementById("day");
     let input2 = document.getElementById("time");
@@ -92,7 +122,7 @@ function App() {
     input5.value = "";
    
   };
-
+  
 
   return (
     <div className="App">
@@ -144,7 +174,9 @@ function App() {
           <br></br>
           <button type='submit' onClick={handleAddClass}>Нэмэх</button>
           <button type='submit' onClick={handleDeletion}>Хасах</button>
-          <button type='submit' name="submitAddItem">Засах</button>
+          <button type='submit' onClick={handleUpdate}>Засах</button>
+          <p style={{color:"red", fontSize: "12px"}}>Засвар хийхдээ сонгосон хичээлийн хуваарийн өдөр болон<br/> цагийг сонгож өөрчлөлтөө хийнэ үү</p>
+          <p style={{fontSize: "30px", color: "white"}}>{result}</p>
         </form>
       </div>
     </div>

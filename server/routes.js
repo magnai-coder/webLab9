@@ -20,13 +20,11 @@ routers.get('/task', async (req, res) => {
 routers.delete('/task', async (req,res) => {
     try{
         const searching = await Class.findOne(req.body);
-        console.log(searching)
         if(!searching){
              res.status(404).json({message: 'haigaad oldsongui'})
         }
         await searching.deleteOne();
         res.json({message: 'Amjilttai ustgagdlaa'})
-          
     }catch(err){
         res.status(500).json({message: err.message})
     }
@@ -42,48 +40,42 @@ routers.post('/task', async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 })
+routers.put('/task', checkClass, async (req,res)=>{
+    if(req.body.day == null || req.body.time == null || req.body.classType==null || req.body.className==null || req.body.roomNumber==null ){
+        return res.status(400).json({message: 'Invalid request body'})
+    }else{
 
-
-routers.post('/register',(req, res) =>{
-     ClassIn.EmployeeModel.create(req.body)
-    .then(employees => res.json(employees))
-    .catch(err => res.json(err))
+    const { day, time, classType, className, roomNumber } = req.body;
+    
    
-    })
+    res.classFind.day = day;
+    res.classFind.time = time;
+    res.classFind.classType = classType;
+    res.classFind.className = className;
+    res.classFind.roomNumber = roomNumber;
 
-routers.post('/login', async(req, res) =>{
-    const {email, password} = req.body;
-       const user =  await ClassIn.EmployeeModel.findOne({email});
-       if(!user){
-        return res.status(404).json({err: 'user not found'});
-       }
-       res.json(user);
-      
+    try{
+        console.log(res.classFind);
+        const updatedClass = await res.classFind.save();
+        res.json(updatedClass);
+    }catch(err){
+        res.status(400).json({message:err.message})
+    }
+}
 })
-
-routers.get('/users', async (req, res) => {
+async function checkClass(req,res,next){
     try {
-        const rawData = await fs.readFile('users.json', 'utf8');
-        const jsonData = JSON.parse(rawData);
-        res.json(jsonData);
-    } catch (error) {
-        console.error("Error reading users file:", error);
-        res.status(500).json({ message: "Internal Server Error" });
+        const { day, time } = req.body;
+        const classFind = await Class.find({ day, time });
+        
+        if (classFind.length === 0) {
+            return res.status(404).json({ message: 'No class found for the given day and time.' });
+        }
+        
+        res.classFind = classFind[0];
+        next();
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
     }
-});
-
-routers.post('/users', (req,res)=>{
-    const rawData = fs.readFile('users.json');
-    const jsonData = JSON.parse(rawData);
-    const newUserData = req.body;
-    const arrayOfUserIds = Object.keys(jsonData).map(userId=>parseInt(userId));
-    const nextUserId = Math.max(...arrayOfUserIds)+1;
-    updatedUsers = {
-            ...jsonData,
-            [nextUserId]:newData
-    }
-    fs.writeFileSync('users.json', JSON.stringify(updatedUsers));
-    res.send('New user added successfully');
-})
-
+}
 module.exports = routers;
